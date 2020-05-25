@@ -1,0 +1,32 @@
+{
+    "@context":"https://doi.org/10.5063/schema/codemeta-2.0",
+    "@type":"SoftwareSourceCode",
+    "identifier":"chemgrid-service",
+    "name":"chemgrid-service",
+    "description":"Draw a grid of desalted compounds, listening on a port or socket.",
+    "codeRepository":"https://github.com/dmyersturnbull/chemgrid-service",
+    "issueTracker":"https://github.com/dmyersturnbull/chemgrid-service/issues",
+    "license":"${license.url}",
+    "version":"0.1",
+    "author":[
+		{
+            "@type":"Person",
+            "givenName":"Douglas",
+            "familyName":"Myers-Turnbull",
+            "@id":"https://orcid.org/0000-0003-3610-4808"
+        }
+    ],
+    "maintainer":{
+            "@type":"Person",
+            "givenName":"Douglas",
+            "familyName":"Myers-Turnbull",
+            "@id":"https://orcid.org/0000-0003-3610-4808"
+        },
+    "contIntegration":"https://github.com/dmyersturnbull/chemgrid-service/actions",
+    "developmentStatus":"active",
+    "downloadUrl":"https://pypi.org/project/chemgrid-service/",
+    "keywords":[ ],
+    "dateCreated":"2020-05-24",
+    "datePublished":"2020-05-24",
+    "programmingLanguage":"Python"
+}
