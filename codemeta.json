@@ -3,7 +3,7 @@
     "@type":"SoftwareSourceCode",
     "identifier":"chemgrid",
     "name":"chemgrid",
-    "description":"Draw a grid of desalted compounds, listening on a port or socket.",
+    "description":"Turn any rdkit cheminformatics function into a daemon that responds to JSON queries.",
     "codeRepository":"https://github.com/dmyersturnbull/chemgrid",
     "issueTracker":"https://github.com/dmyersturnbull/chemgrid/issues",
     "license":"${license.url}",

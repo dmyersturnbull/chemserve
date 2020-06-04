@@ -1,3 +1,9 @@
-[
-	
-]
+{
+    "compounds": [
+        {"seq": "InChI=1S/H2O/h1H2", "name": "water", "key":  "U0001"}
+    ],
+    "params": {
+        "n_rows": 1,
+        "n_cols": 1
+    }
+}
