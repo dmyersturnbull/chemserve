@@ -3,35 +3,34 @@ from typing import Union
 from pathlib import Path
 from copy import copy
 
-from chemgrid._rdkit_imports import Chem, SaltRemover, logger
-from chemgrid._concrete_base import ChemWrap as _Wrap
+from chemserve._rdkit_imports import Chem, SaltRemover, logger
+from chemserve._concrete_base import ChemWrap as _Wrap
 
 
 class ChemWrap(_Wrap):
-
     @property
     def formal_charge(self) -> int:
         return Chem.rdmolops.GetFormalCharge(self._mol)
 
     @property
     def formula(self):
-        return self._descriptor('CalcMolFormula')
+        return self._descriptor("CalcMolFormula")
 
     @property
     def n_stereocenters(self) -> int:
-        return self._descriptor('CalcNumAtomStereoCenters')
+        return self._descriptor("CalcNumAtomStereoCenters")
 
     @property
     def n_rings(self) -> int:
-        return self._descriptor('CalcNumRings')
+        return self._descriptor("CalcNumRings")
 
     @property
     def n_aromatic_rings(self) -> int:
-        return self._descriptor('CalcNumAromaticRings')
+        return self._descriptor("CalcNumAromaticRings")
 
     @property
     def n_unspecified_sterocenters(self) -> int:
-        return self._descriptor('CalcNumUnspecifiedAtomStereoCenters')
+        return self._descriptor("CalcNumUnspecifiedAtomStereoCenters")
 
     def _descriptor(self, fn_name):
         if fn_name not in self._metrics:
@@ -46,6 +45,7 @@ class ChemWrap(_Wrap):
     def fingerprint(self, radius: int, features: bool) -> str:
         # noinspection PyUnresolvedReferences
         from rdkit.Chem import AllChem
+
         fp1 = AllChem.GetMorganFingerprint(self._mol, radius, useFeatures=features)
         return fp1
 
@@ -75,6 +75,7 @@ class ChemWrap(_Wrap):
             mol = copy(self._mol)
         # noinspection PyUnresolvedReferences
         from rdkit.Chem import AllChem
+
         if three_d:
             AllChem.EmbedMolecule(mol)
         else:
@@ -111,4 +112,4 @@ class ChemWrap(_Wrap):
         return self.kekulize().inchikey == other.kekulize().inchikey
 
 
-__all__ = ['ChemWrap']
+__all__ = ["ChemWrap"]

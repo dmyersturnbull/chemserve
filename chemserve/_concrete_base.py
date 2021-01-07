@@ -1,15 +1,14 @@
 from __future__ import annotations
 from typing import Optional
 
-from chemgrid.base_chem import BaseChem
-from chemgrid._rdkit_imports import Chem, Mol, Inchi, NullMoleculeError
+from chemserve.base_chem import BaseChem
+from chemserve._rdkit_imports import Chem, Mol, Inchi, NullMoleculeError
 
 
 class ChemWrap(BaseChem):
-
     def __init__(self, mol: Mol, name: Optional[str], key: Optional[str]):
         if name is None:
-            name = mol.GetProp('_Name')
+            name = mol.GetProp("_Name")
         else:
             mol.SetProp("_Name", name)
         # It's worth checking these here because using an int for the key, for instance, could cause very subtle bugs
@@ -122,7 +121,7 @@ class ChemWrap(BaseChem):
         self._inchi = self._inchi
         self._aux = self.aux
         self._smiles = self.smiles
-        for k, v in kwargs.items():
+        for k, v in kwargs.compounds():
             setattr(self, k, v)
         return wrap
 

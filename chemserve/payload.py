@@ -3,8 +3,8 @@ from typing import Union, Sequence, Mapping, Optional
 
 from serviceit.server import Json, Payload as _Payload
 
-from chemgrid.base_chem import BaseChem
-from chemgrid.models import Concrete, BaseChem
+from chemserve.base_chem import BaseChem
+from chemserve.models import Concrete, BaseChem
 
 
 JsonDataType = Union[int, str, None, bool, Sequence[int], Sequence[str], Sequence[bool]]
@@ -20,13 +20,12 @@ class Payload:
         return Payload(items, params)
 
     def encode(self) -> Json:
-        return _Payload({
-            'compounds': [self._encode(i) for i in self._items],
-            'params': self._params
-        })
+        return _Payload(
+            {"compounds": [self._encode(i) for i in self._items], "params": self._params}
+        )
 
     @property
-    def items(self) -> Sequence[BaseChem]:
+    def compounds(self) -> Sequence[BaseChem]:
         return self._items
 
     @property
@@ -53,25 +52,21 @@ class Payload:
 
     @classmethod
     def decode(cls, payload: Json) -> ConcretePayload:
-        items = [cls._decode(c) for c in payload['compounds']]
-        params = payload.get('params', {})
+        items = [cls._decode(c) for c in payload["compounds"]]
+        params = payload.get("params", {})
         return ConcretePayload(items, params)
 
     def _encode(self, item: BaseChem):
-        return {
-            'seq': item.inchi_or_smiles,
-            'name': item.name,
-            'key': item.key
-        }
+        return {"seq": item.inchi_or_smiles, "name": item.name, "key": item.key}
 
     @classmethod
     def _decode(cls, dct: Mapping[str, str]) -> Concrete:
-        return Concrete.of(dct['seq'], dct.get('name'), dct.get('key'))
+        return Concrete.of(dct["seq"], dct.get("name"), dct.get("key"))
 
     def __getitem__(self, item: Union[int, str]):
         if isinstance(item, int):
             return self._items[item]
-        elif isinstance(item, str) and item=='params':
+        elif isinstance(item, str) and item == "params":
             return self._params[item]
         else:
             raise TypeError("{} not found".format(item))
@@ -80,27 +75,34 @@ class Payload:
         # this is slightly harsh
         if not isinstance(other, self.__class__):
             raise TypeError("Universal equality unsupported")
-        return self.params == other.params and self.items == other.items
+        return self.params == other.params and self.compounds == other.compounds
 
     def __hash__(self):
-        chem_hashes = [hash(item) for item in self.items]
-        param_hashes = [str(k)+'='+str(v) for k, v in self.params.items()]
+        chem_hashes = [hash(item) for item in self.compounds]
+        param_hashes = [str(k) + "=" + str(v) for k, v in self.params.compounds()]
         return hash(tuple(*chem_hashes, *param_hashes))
 
     def __repr__(self):
-        return "{}(n={} : ({}) @ {})".format(self.__class__.__name__, len(self.items), ','.join(k+'='+str(v) for k, v in self.params), hex(id(self)))
+        return "{}(n={} : ({}) @ {})".format(
+            self.__class__.__name__,
+            len(self.compounds),
+            ",".join(k + "=" + str(v) for k, v in self.params),
+            hex(id(self)),
+        )
 
     def __str__(self):
-        return "{}(n={} : ({}))".format(self.__class__.__name__, len(self.items), ','.join(k+'='+str(v) for k, v in self.params))
+        return "{}(n={} : ({}))".format(
+            self.__class__.__name__,
+            len(self.compounds),
+            ",".join(k + "=" + str(v) for k, v in self.params),
+        )
 
 
 class ConcretePayload(Payload):
-
     @property
-    def items(self) -> Sequence[Concrete]:
+    def compounds(self) -> Sequence[Concrete]:
         # noinspection PyTypeChecker
         return self._items
 
 
-
-__all__ = ['Payload', 'ConcretePayload']
+__all__ = ["Payload", "ConcretePayload"]

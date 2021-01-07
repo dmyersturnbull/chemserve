@@ -1,16 +1,15 @@
 import logging
 from pathlib import Path
 from typing import Optional, Union, Iterable, Sequence, Callable
-from chemgrid.models import Concrete
+from chemserve.models import Concrete
 
-from chemgrid._rdkit_imports import Draw, cairosvg, Image
+from chemserve._rdkit_imports import Draw, cairosvg, Image
 
-logger = logging.getLogger("chemgrid")
+logger = logging.getLogger("chemserve")
 PathLike = Union[Path, str]
 
 
 class DrawingOptionSets:
-
     @classmethod
     def nature_springer(cls):
         opts = Draw.DrawingOptions()
@@ -28,7 +27,7 @@ class DrawingOptionSets:
 
 
 class ChemGraphicsKit:
-    def __init__(self, opts = None, scale: float = 1.0):
+    def __init__(self, opts=None, scale: float = 1.0):
         self._opts = opts
         self._scale = scale
 
@@ -51,7 +50,13 @@ class ChemGraphicsKit:
             Draw.MolToFile(mol, str(tmppath), options=self._opts)
             save_fn(url=str(tmppath), write_to=str(path), scale=self._scale)
 
-    def draw_grid(self, chems: Iterable[Union[Concrete, Iterable[Concrete]]], n_rows: int, n_cols: int, opts=None) -> Image:
+    def draw_grid(
+        self,
+        chems: Iterable[Union[Concrete, Iterable[Concrete]]],
+        n_rows: int,
+        n_cols: int,
+        opts=None,
+    ) -> Image:
         wrapped = self._wrap_up(chems)
         mols = [chem.mol for chem in wrapped]
         labels = [self._label(chem) for chem in wrapped]

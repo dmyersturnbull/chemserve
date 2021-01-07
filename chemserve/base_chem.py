@@ -1,9 +1,9 @@
 import abc
 from functools import total_ordering
 
+
 @total_ordering
 class BaseChem(metaclass=abc.ABCMeta):
-
     @property
     def inchi_or_smiles(self) -> str:
         """
@@ -24,7 +24,11 @@ class BaseChem(metaclass=abc.ABCMeta):
         # TODO too harsh
         if not isinstance(other, self.__class__):
             raise TypeError("Universal equality unsupported")
-        return (self.inchi_or_smiles, self.name, self.key) == (other.inchi_or_smiles, other.name, other.key)
+        return (self.inchi_or_smiles, self.name, self.key) == (
+            other.inchi_or_smiles,
+            other.name,
+            other.key,
+        )
 
     def __hash__(self):
         return hash((self.inchi_or_smiles, self.name, self.key))
@@ -34,7 +38,11 @@ class BaseChem(metaclass=abc.ABCMeta):
         if not isinstance(other, self.__class__):
             raise TypeError("Universal equality unsupported")
         # the most useful for display, presumably
-        return (self.name, self.key, self.inchi_or_smiles) < (other.name, other.key, other.inchi_or_smiles)
+        return (self.name, self.key, self.inchi_or_smiles) < (
+            other.name,
+            other.key,
+            other.inchi_or_smiles,
+        )
 
 
-__all__ = ['BaseChem']
+__all__ = ["BaseChem"]

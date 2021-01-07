@@ -1,15 +1,13 @@
-
 from __future__ import annotations
 from typing import Union, Optional, Iterable
 from pathlib import Path
 
-from chemgrid._rdkit_imports import Chem, MoleculeConversionError
-from chemgrid._concrete_fns import ChemWrap
-from chemgrid.base_chem import BaseChem as _BaseChem
+from chemserve._rdkit_imports import Chem, MoleculeConversionError
+from chemserve._concrete_fns import ChemWrap
+from chemserve.base_chem import BaseChem as _BaseChem
 
 
 class Concrete(ChemWrap):
-
     @classmethod
     def from_mol_file(
         cls, path: Union[Path, str], name: Optional[str], key: Optional[str]
@@ -63,7 +61,6 @@ class Concrete(ChemWrap):
 
 
 class BaseChem(_BaseChem):
-
     def __init__(self, inchi_or_smiles: str, name: Optional[str], key: Optional[str]):
         self._inchi_or_smiles = inchi_or_smiles
         self._name = name
@@ -82,4 +79,4 @@ class BaseChem(_BaseChem):
         return self._key
 
 
-__all__ = ['Concrete', 'BaseChem']
+__all__ = ["Concrete", "BaseChem"]

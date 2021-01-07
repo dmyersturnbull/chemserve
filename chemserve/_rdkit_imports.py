@@ -1,6 +1,6 @@
 import logging
 
-logger = logging.getLogger("chemgrid")
+logger = logging.getLogger("chemserve")
 
 
 try:
