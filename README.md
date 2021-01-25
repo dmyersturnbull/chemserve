@@ -1,16 +1,16 @@
 # chemserve
 
-[![Version status](https://img.shields.io/pypi/status/chemserve)](https://pypi.org/project/chemserve/)
+[![Version status](https://img.shields.io/pypi/status/chemserve?label=status)](https://pypi.org/project/chemserve)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/chemserve)](https://pypi.org/project/chemserve/)
-[![Docker](https://img.shields.io/docker/v/dmyersturnbull/chemserve?color=green&label=DockerHub)](https://hub.docker.com/repository/docker/dmyersturnbull/chemserve)
-[![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/dmyersturnbull/service-it?include_prereleases&label=GitHub)](https://github.com/dmyersturnbull/service-it/releases)
-[![Conda-Forge](https://img.shields.io/conda/vn/conda-forge/chemserve?label=Conda-Forge)](https://anaconda.org/conda-forge/chemserve)
-[![Latest version on PyPi](https://badge.fury.io/py/chemserve.svg)](https://pypi.org/project/chemserve/)
-[![Documentation status](https://readthedocs.org/projects/service-it/badge/?version=latest&style=flat-square)](https://service-it.readthedocs.io/en/stable/)
-[![Build & test](https://github.com/dmyersturnbull/service-it/workflows/Build%20&%20test/badge.svg)](https://github.com/dmyersturnbull/service-it/actions)
-[![Maintainability](https://api.codeclimate.com/v1/badges/cb9bc2733ece01a8800b/maintainability)](https://codeclimate.com/github/dmyersturnbull/service-it/maintainability)
-[![Coverage](https://coveralls.io/repos/github/dmyersturnbull/service-it/badge.svg?branch=master)](https://coveralls.io/github/dmyersturnbull/service-it?branch=master)
+[![Python version compatibility](https://img.shields.io/pypi/pyversions/chemserve?label=Python)](https://pypi.org/project/chemserve)
+[![Version on Docker Hub](https://img.shields.io/docker/v/dmyersturnbull/chemserve?color=green&label=Docker%20Hub)](https://hub.docker.com/repository/docker/dmyersturnbull/chemserve)
+[![Version on Github](https://img.shields.io/github/v/release/dmyersturnbull/chemserve?include_prereleases&label=GitHub)](https://github.com/dmyersturnbull/chemserve/releases)
+[![Version on PyPi](https://img.shields.io/pypi/v/chemserve?label=PyPi)](https://pypi.org/project/chemserve)  
+[![Build (Actions)](https://img.shields.io/github/workflow/status/dmyersturnbull/chemserve/Build%20&%20test?label=Tests)](https://github.com/dmyersturnbull/chemserve/actions)
+[![Documentation status](https://readthedocs.org/projects/chemserve/badge)](https://chemserve.readthedocs.io/en/stable)
+[![Coverage (coveralls)](https://coveralls.io/repos/github/dmyersturnbull/chemserve/badge.svg?branch=main&service=github)](https://coveralls.io/github/dmyersturnbull/chemserve?branch=main)
+[![Maintainability (Code Climate)](https://api.codeclimate.com/v1/badges/eea2b741dbbbb74ad18a/maintainability)](https://codeclimate.com/github/dmyersturnbull/chemserve/maintainability)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dmyersturnbull/chemserve/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/dmyersturnbull/chemserve/?branch=main)
 
 Easily craft an rdkit [facade](https://en.wikipedia.org/wiki/Facade_pattern), resulting in conda-free code.
 

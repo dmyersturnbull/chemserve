@@ -6,8 +6,8 @@
     "description":"Turn any rdkit cheminformatics function into a daemon that responds to JSON queries.",
     "codeRepository":"https://github.com/dmyersturnbull/chemserve",
     "issueTracker":"https://github.com/dmyersturnbull/chemserve/issues",
-    "license":"${license.url}",
-    "version":"0.1",
+    "license":"https://www.apache.org/licenses/LICENSE-2.0",
+    "version":"0.1.0",
     "author":[
 		{
             "@type":"Person",

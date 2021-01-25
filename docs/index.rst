@@ -1,4 +1,4 @@
-chemserve-service
+chemserve
 ====================================
 
 .. toctree::
