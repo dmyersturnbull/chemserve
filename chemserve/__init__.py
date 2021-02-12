@@ -10,6 +10,7 @@ from chemserve.graphics import ChemGraphicsKit
 from chemserve.payload import Payload, ConcretePayload
 from chemserve.service import Client, Server, ChemServe
 from chemserve.models import BaseChem, Concrete as Chem
+from chemserve.fingerprints import Fingerprint
 
 pkg = Path(__file__).absolute().parent.name
 logger = logging.getLogger(pkg)

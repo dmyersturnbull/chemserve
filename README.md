@@ -62,12 +62,16 @@ Your server receives a `Payload` with parameters (`.params`) and a list of compo
 each wrapped up into a class that lazily stores the SMILES, inchi, inchikey, name, mol object, and optional identifier.
 Each has convenience functions for things like getting fingerprints and deduplicating structures.
 
+**Note:** Chemserve automatically sanitizes all payload structures as per rdkit.
+Set `rdkit.Chem.rdmolops.SanitizeFlags.SANITIZE_NONE` to `False` to control this behavior.
+
+
 Here’s an example that draws compounds on an m×n grid.
 (This particular example is actually built-in as `chemserve.drawing_service(port)`.)
 
 ```python
 
-from chemserve import chemserve, ChemGraphicsKit, BaseChem, Payload
+from chemserve import ChemServe, ChemGraphicsKit, BaseChem, Payload
 
 
 def draw(payload: Payload) -> None:
@@ -80,7 +84,7 @@ def draw(payload: Payload) -> None:
   grid = ChemGraphicsKit().draw_grid(payload.compounds, rows, cols)
   grid.save(path)
 
-server = chemserve.server(draw, port=1633)
+server = ChemServe.server(draw, port=1633)
 client = server.client()  # just shorthand
 
 client.send_multiple([BaseChem("InChI=1S/H2O/h1H2", "water", "U0001")], params=None)
@@ -88,29 +92,30 @@ client.send_multiple([BaseChem("InChI=1S/H2O/h1H2", "water", "U0001")], params=N
 
 #### Example 2: Calculate fingerprints and send them back
 
-Here’s an example that desalts & deduplicates molecules and calculates ECFP fingerprints:
+Here’s an example that desalts & de-duplicates molecules and calculates ECFP fingerprints:
 
 ```python
-from chemserve import chemserve, BaseChem, Chem
+from chemserve import ChemServe, BaseChem, Chem
 
 def fingerprint(chem: Chem, params):
-    return chem.desalt().deduplicate().fingerprint(radius=2, features=False)
+    fprint = chem.desalt().deduplicate().fingerprint(radius=2, bits=4096)
+    print(fprint)  # this will be a binary string; e.g. 011010111...
+    # the dict will be encoded as JSON
+    return dict(source_key=chem.key, n_on=fprint.n_on, n_off=fprint.n_off)
 # the "simple" in simple_server just means it takes one compound at a time
-server = chemserve.simple_server(fingerprint, port=1633)
+server = ChemServe.simple_server(fingerprint, port=1633)
 
 # make a client (ordinarily this would happen on another process or remotely)
-client = chemserve.client(1633)
+client = ChemServe.client(1633)
 
-# tell the client to handle replies
-def callback(query, reply):
-    print(query, reply)
-client.add_callback(callback)
+# this will just return None if nothing was received, so
+# you can handle these asynchronously
+client.receive()
 
-# send something
+# send a compound
 water = BaseChem("InChI=1S/H2O/h1H2", name="water", key="U0001")
 client.send_one(water)
 ```
-
 
 #### The situation that sparked this package
 
@@ -126,8 +131,7 @@ There are two components:
 
 The client is installable through pip/poetry. However, the daemon won’t work this way!  
 The server depends on rdkit, so it cannot be installed through pip.
-The conda recipe specifies rdkit as a dependency.
-
+The conda recipe specifies rdkit as a dependency.\
 
 #### Contributing
 

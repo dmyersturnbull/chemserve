@@ -1,13 +1,16 @@
 from __future__ import annotations
-from typing import Union
+from typing import Iterable, Union
 from pathlib import Path
 from copy import copy
 
 from chemserve._rdkit_imports import Chem, SaltRemover, logger
 from chemserve._concrete_base import ChemWrap as _Wrap
+from chemserve.fingerprints import Fingerprint
 
 
 class ChemWrap(_Wrap):
+    """"""
+
     @property
     def formal_charge(self) -> int:
         return Chem.rdmolops.GetFormalCharge(self._mol)
@@ -29,7 +32,7 @@ class ChemWrap(_Wrap):
         return self._descriptor("CalcNumAromaticRings")
 
     @property
-    def n_unspecified_sterocenters(self) -> int:
+    def n_unspecified_stereocenters(self) -> int:
         return self._descriptor("CalcNumUnspecifiedAtomStereoCenters")
 
     def _descriptor(self, fn_name):
@@ -42,34 +45,49 @@ class ChemWrap(_Wrap):
         w = Chem.SDWriter(path)
         w.write(self._mol)
 
-    def fingerprint(self, radius: int, features: bool) -> str:
-        # noinspection PyUnresolvedReferences
+    def ecfp(self, radius: int, bits: int = 2048) -> Fingerprint:
+        """
+        Calculates an ECFP (Morgan) fingerprint.
+
+        Args:
+            radius: Recommended values are 2, 3, and 4
+            bits: The number of bits to encode the fingerprint with
+        """
+        return self._morgan(radius=radius, nBits=bits, useFeatures=False)
+
+    def ecfp_with_fcfp(self, radius: int, bits: int = 2048) -> Fingerprint:
+        """
+        Calculates a fingerprint that combines ECFP with "functional-class fingerprint" features.
+        See `the rdkit FPCP features <https://rdkit.readthedocs.io/en/latest/GettingStartedInPython.html#feature-definitions-used-in-the-morgan-fingerprints>`_.
+
+        Args:
+            radius: Recommended values are 2, 3, and 4
+            bits: The number of bits to encode the fingerprint with
+        """
+        return self._morgan(radius=radius, nBits=bits, useFeatures=True)
+
+    def _morgan(self, **kwargs) -> Fingerprint:
         from rdkit.Chem import AllChem
 
-        fp1 = AllChem.GetMorganFingerprint(self._mol, radius, useFeatures=features)
-        return fp1
+        fp1 = AllChem.GetMorganFingerprintAsBitVect(self._mol, **kwargs)
+        return Fingerprint(fp1)
 
-    def without_sterochem(self) -> ChemWrap:
+    def is_substruct_of(self, f: ChemWrap) -> bool:
+        return self.mol.HasSubstructMatch(f.mol)
+
+    def without_stereochem(self) -> __qualname__:
         mol = copy(self._mol)
         Chem.rdmolops.RemoveStereochemistry(mol)
         return ChemWrap(mol, self._name, self._key)
 
-    def with_2d_coords(self, with_hydrogens: bool = True) -> ChemWrap:
-        return self._with_coords(False, with_hydrogens=with_hydrogens)
+    def with_2d_coords(self, hydrogens: bool = True) -> __qualname__:
+        return self._with_coords(False, hydrogens=hydrogens)
 
-    def with_3d_coords(self, with_hydrogens: bool = True) -> ChemWrap:
-        return self._with_coords(True, with_hydrogens=with_hydrogens)
+    def with_3d_coords(self, hydrogens: bool = True) -> __qualname__:
+        return self._with_coords(True, hydrogens=hydrogens)
 
-    def kekulize(self) -> ChemWrap:
-        mol = Chem.Kekulize(self._mol)
-        # don't make a copy because the inchi might be different
-        new = ChemWrap(mol, self._name, self._key)
-        # I don't know whether this is necessary
-        new._smiles = Chem.MolToSmiles(self._mol, kekuleSmiles=True)
-        return new
-
-    def _with_coords(self, three_d: bool, with_hydrogens: bool) -> ChemWrap:
-        if with_hydrogens:
+    def _with_coords(self, three_d: bool, hydrogens: bool) -> __qualname__:
+        if hydrogens:
             mol = Chem.AddHs(self._mol)
         else:
             mol = copy(self._mol)
@@ -82,24 +100,22 @@ class ChemWrap(_Wrap):
             AllChem.Compute2DCoords(mol)
         return ChemWrap(mol, name=self._name, key=self._key)
 
-    def desalt(self) -> ChemWrap:
+    def desalt(self) -> __qualname__:
         # don't make a copy because the inchi might be different
         desalted = SaltRemover.SaltRemover().StripMol(self._mol)
-        return ChemWrap.of(desalted, self._name, self._key)
+        return self.__class__(desalted, self._name, self._key)
 
-    def deduplicate(self) -> ChemWrap:
-        parts = set(self._smiles.split("."))
+    def deduplicate(self) -> __qualname__:
+        parts = set(self.smiles.split("."))
         joined = ".".join(parts)
         mol = Chem.MolFromSmiles(joined)
-        return ChemWrap(mol, self.name, self.key)
+        return self.__class__(mol, self.name, self.key)
 
-    def longest_component(self) -> ChemWrap:
-        parts = set(self._smiles.split("."))
+    def longest_component(self) -> __qualname__:
+        parts = set(self.smiles.split("."))
         if len(parts) > 1:
             logger.debug(
-                "SMILES {} (name={}, key={}) contains {} nonidentical independent components".format(
-                    self.smiles, self.name, self.key, len(parts)
-                )
+                f"SMILES {self.smiles} (name={self.name}, key={self.key}) has {len(parts)} unique parts"
             )
         longest = ""
         for p in parts:
@@ -108,8 +124,20 @@ class ChemWrap(_Wrap):
         mol = Chem.MolFromSmiles(longest)
         return ChemWrap(mol, self.name, self.key)
 
-    def equiv_to(self, other: ChemWrap) -> bool:
-        return self.kekulize().inchikey == other.kekulize().inchikey
+    @classmethod
+    def mcs(cls, items: Iterable[ChemWrap], **kwargs) -> __qualname__:
+        """
+        Finds a maximum common substructure using rdkit ``Chem.rdFMCS``.
+
+        Args:
+            items: Molecules
+            kwargs: Passed directly to ``rdFMCS``
+        """
+        return cls(
+            Chem.rdFMCS([i.mol for i in items], **kwargs),
+            name=f"[{[i.name for i in items]}",
+            key=f"[{[i.key for i in items]}",
+        )
 
 
 __all__ = ["ChemWrap"]

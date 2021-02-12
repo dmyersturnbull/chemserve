@@ -10,7 +10,7 @@ from chemserve.base_chem import BaseChem as _BaseChem
 class Concrete(ChemWrap):
     @classmethod
     def from_mol_file(
-        cls, path: Union[Path, str], name: Optional[str], key: Optional[str]
+        cls, path: Union[Path, str], name: Optional[str] = None, key: Optional[str] = None
     ) -> Concrete:
         mol = Chem.MolFromMolFile(str(path))
         return Concrete(mol, name, key)
@@ -21,24 +21,19 @@ class Concrete(ChemWrap):
         if label_sep is None:
             name, key = None, None
         else:
-            name = (
-                None
-                if any([s.name is None for s in sources])
-                else "; ".join([s.name for s in sources])
-            )
-            key = (
-                None
-                if any([s.key is None for s in sources])
-                else "; ".join([s.key for s in sources])
-            )
+            name = f"[{[i.name for i in sources]}"
+            key = f"[{[i.key for i in sources]}"
         return cls.of(smiles, name, key)
 
     @classmethod
     def of(
-        cls, source: Union[Chem.Mol, str, Concrete], name: Optional[str], key: Optional[str]
+        cls,
+        source: Union[Chem.Mol, str, ChemWrap],
+        name: Optional[str] = None,
+        key: Optional[str] = None,
     ) -> Concrete:
-        if isinstance(source, Concrete):
-            return source.copy(name=name, key=key)
+        if isinstance(source, ChemWrap):
+            return source._copy_as(cls, replace=True, name=name, key=key)
         if isinstance(source, str) and source.startswith("InChI="):
             mol = Chem.MolFromInchi(source)
         elif isinstance(source, str):
@@ -47,21 +42,17 @@ class Concrete(ChemWrap):
             mol = source
         else:
             raise TypeError(
-                "Type {} (for instance {}, key {}, name {}) is not valid for mol".format(
-                    type(source), source, key, name
-                )
+                f"Type {type(source)} (for instance {source}, key {key}, name {name}) is not valid for mol"
             )
         if mol is None:
             raise MoleculeConversionError(
-                "{} (key {}, name {}) was not converted correctly by SMILES or InChI".format(
-                    source, key, name
-                )
+                f"{source} (key {key}, name {name}) was not converted correctly by SMILES or InChI"
             )
-        return Concrete(mol, name, key)
+        return cls(mol, name, key)
 
 
 class BaseChem(_BaseChem):
-    def __init__(self, inchi_or_smiles: str, name: Optional[str], key: Optional[str]):
+    def __init__(self, inchi_or_smiles: str, name: Optional[str] = None, key: Optional[str] = None):
         self._inchi_or_smiles = inchi_or_smiles
         self._name = name
         self._key = key
