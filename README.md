@@ -11,7 +11,7 @@
 [![Coverage (coveralls)](https://coveralls.io/repos/github/dmyersturnbull/chemserve/badge.svg?branch=main&service=github)](https://coveralls.io/github/dmyersturnbull/chemserve?branch=main)
 [![Maintainability (Code Climate)](https://api.codeclimate.com/v1/badges/01edf61996c06b0f47c2/maintainability)](https://codeclimate.com/github/dmyersturnbull/chemserve/maintainability)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dmyersturnbull/chemserve/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/dmyersturnbull/chemserve/?branch=main)
-[![CodeFactor](https://www.codefactor.io/repository/github/dmyersturnbull/chemserve/badge)](https://www.codefactor.io/repository/github/dmyersturnbull/chemserve)  
+[![CodeFactor](https://www.codefactor.io/repository/github/dmyersturnbull/chemserve/badge)](https://www.codefactor.io/repository/github/dmyersturnbull/chemserve)
 [![Created with Tyrannosaurus](https://img.shields.io/badge/Created_with-Tyrannosaurus-0000ff.svg)](https://github.com/dmyersturnbull/tyrannosaurus)
 
 Trivially craft an [facade](https://en.wikipedia.org/wiki/Facade_pattern) around [rdkit](https://www.rdkit.org/)
@@ -40,38 +40,31 @@ server = ChemServe.server(function_to_perform, port=1633)
 
 This has a few extremely useful properties:
 
-- 🔌 **Modularity:** Wrapping complex systems (like rdkit) in a [facade](https://en.wikipedia.org/wiki/Facade_pattern)
-  is a great idea. Tests for your client code in fact *can’t* depend on rdkit, leaving them uncoupled.
-- 🐍 **Conda independence:** Rdkit is not on PyPi†, but lots of packages are only on PyPi, which has approximately
-  10× the number of packages.  
-  Unfortunately, mixing them can [silently break](https://dmyersturnbull.github.io/#-the-python-build-landscape)
-  Conda’s solver. Your facade only needs rdkit, and your client can use any PyPi package.
-- ⌛ **Performance:** Conda is heavy, and its dependency resolution is slow (and less reliable) compared to
+- **Modularity:** Wrap complex systems like rdkit in [facades](https://en.wikipedia.org/wiki/Facade_pattern).
+  Tests for your client code *can’t* depend on rdkit, leaving them uncoupled.
+- **Conda independence:**
+  Mixing pip and conda dependencies † can introduce [clobbering or silent conflicts](https://dmyersturnbull.github.io/#-the-python-build-landscape).
+  Your server needs only rdkit, and your client can use any PyPi package.
+- **Performance:** Conda is heavy, and its dependency resolution is slow (and less reliable) compared to
   [Poetry’s](https://python-poetry.org).
-  Your facade’s public functions likely only delegate to a few rdkit calls, so updates can probably be infrequent.
-  Meanwhile, you can make frequent changes to the client with speedy testing.
-- 🛠️ **Tooling:** Without Conda, you can use modern build, isolation, and CI/CD tools like Poetry.  
-  (See [Tyrannosaurus](https://github.com/dmyersturnbull/tyrannosaurus) for an example of a modern CI/CD pipeline
-  built with Poetry and [Github Actions](https://github.com/features/actions).
-  It also shows how to [generate a Conda-Forge recipe](https://tyrannosaurus.readthedocs.io/en/stable/anaconda.html)
-  for your facade package.)
-- 🔓 **Asynchronous code:** Asynchronous calls can be made to numerically heavy rdkit code:
+  Your facade’s public functions likely only delegate to a few rdkit calls, so updates can be infrequent.
+  Your client can be tested quickly in conda-free continous integration, so you can make frequent changes.
+- **Tooling:** By excluding Conda, you can use modern build, isolation, and CI/CD tools like [Poetry](https://python-poetry.org/).
+  See [Tyrannosaurus](https://github.com/dmyersturnbull/tyrannosaurus) for an example pipeline. Also see how to
+  [publish the facade to conda-forge](https://tyrannosaurus.readthedocs.io/en/stable/anaconda.html).
+- **Asynchronous code:** Asynchronous calls can be made to numerically heavy rdkit code:
   Your client sends a request and independently handles payloads whenever they’re shipped back.
 
 † Rdkit has an [open issue](https://github.com/rdkit/rdkit/issues/1812) about pip installation.
-Unfortunately, the Pip package would likely still be massive and slow to install.
+Unfortunately, the Pip package would be massive and slow to install.
 
 ### 🔨 Installation
 
-Install the server in one package or plain conda environment:
-- `conda install chemserve`
-
-And install the client in any packages that need it:
-- `pip install chemserve`
+- Install the server in one package or plain conda environment: `conda install chemserve`
+- And install the client in any packages that need it: `pip install chemserve`
 
 Call `ChemServe.server(function, port)` in the server environment,
 and call `ChemServe.client(port)` in the client package.
-I use [Poetry](https://python-poetry.org) to build most packages.
 
 ### 🎁 Baked-in functionality
 
