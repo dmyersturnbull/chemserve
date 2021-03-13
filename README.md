@@ -8,13 +8,10 @@
 [![Version on PyPi](https://img.shields.io/pypi/v/chemserve?label=PyPi)](https://pypi.org/project/chemserve)
 [![Version on Conda-Forge](https://img.shields.io/conda/vn/conda-forge/chemserve?label=Conda-Forge)](https://anaconda.org/conda-forge/chemserve)  
 [![Build (Actions)](https://img.shields.io/github/workflow/status/dmyersturnbull/chemserve/Build%20&%20test?label=Tests)](https://github.com/dmyersturnbull/chemserve/actions)
-[![Build (Travis)](https://www.travis-ci.com/dmyersturnbull/chemserve.svg?branch=main)](https://travis-ci.com/dmyersturnbull/chemserve)
 [![Coverage (coveralls)](https://coveralls.io/repos/github/dmyersturnbull/chemserve/badge.svg?branch=main&service=github)](https://coveralls.io/github/dmyersturnbull/chemserve?branch=main)
-[![Coverage (codecov)](https://codecov.io/github/dmyersturnbull/chemserve/coverage.svg)](https://codecov.io/gh/dmyersturnbull/chemserve)  
 [![Maintainability (Code Climate)](https://api.codeclimate.com/v1/badges/01edf61996c06b0f47c2/maintainability)](https://codeclimate.com/github/dmyersturnbull/chemserve/maintainability)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dmyersturnbull/chemserve/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/dmyersturnbull/chemserve/?branch=main)
 [![CodeFactor](https://www.codefactor.io/repository/github/dmyersturnbull/chemserve/badge)](https://www.codefactor.io/repository/github/dmyersturnbull/chemserve)  
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4485186.svg)](https://doi.org/10.5281/zenodo.4485186)
 [![Created with Tyrannosaurus](https://img.shields.io/badge/Created_with-Tyrannosaurus-0000ff.svg)](https://github.com/dmyersturnbull/tyrannosaurus)
 
 Trivially craft an [facade](https://en.wikipedia.org/wiki/Facade_pattern) around [rdkit](https://www.rdkit.org/)
