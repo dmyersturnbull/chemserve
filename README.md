@@ -24,7 +24,7 @@ You make two uncoupled packages:
 Overlaps a little with [chembl_beaker](https://github.com/chembl/chembl_beaker/),
 a REST server with several useful rdkit-backed functions.
 Chemserve is much thinner and is equally happy with *any* rdkit-backed function.
-Create and start a server by calling `ChemServe.server`, like this:
+Create and start a server with `ChemServe.server`:
 
 ```python
 def function_to_perform(payload: Payload):
