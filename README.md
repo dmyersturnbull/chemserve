@@ -120,8 +120,9 @@ def fingerprint(chem: Chem, params):
     # the dict will be encoded as JSON
     return dict(source_key=chem.key, n_on=fprint.n_on, n_off=fprint.n_off
 
-# the "simple" in simple_server just means it takes one compound at a time
-server = ChemServe.simple_server(fingerprint, port=1633)
+# a 'per_compound" server (takes one compound at a time)
+# you can add a additional "tasks" 
+server = ChemServe.per_compound().map("main", fingerprint).build(1633)
 
 # make a client (ordinarily this would happen on another process or remotely)
 client = ChemServe.client(1633)

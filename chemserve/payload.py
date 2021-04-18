@@ -11,12 +11,24 @@ JsonDataType = Union[int, str, None, bool, Sequence[int], Sequence[str], Sequenc
 
 
 class Payload:
-    def __init__(self, items: Sequence[BaseChem], params: Optional[Mapping[str, JsonDataType]]):
+    def __init__(
+        self,
+        items: Sequence[BaseChem],
+        params: Optional[Mapping[str, JsonDataType]],
+    ):
         self._items = items
         self._params = {} if params is None else params
 
     @classmethod
-    def new(cls, items: Sequence[BaseChem], params: Mapping[str, JsonDataType]) -> Payload:
+    def empty(cls) -> Payload:
+        return Payload([], {})
+
+    @classmethod
+    def new(
+        cls,
+        items: Sequence[BaseChem],
+        params: Mapping[str, JsonDataType],
+    ) -> Payload:
         return Payload(items, params)
 
     def encode(self) -> Json:
@@ -26,11 +38,15 @@ class Payload:
 
     @property
     def compounds(self) -> Sequence[BaseChem]:
-        return self._items
+        return self.compounds
 
     @property
     def params(self) -> Mapping[str, JsonDataType]:
         return self._params
+
+    @property
+    def task(self) -> str:
+        return self.params.get("task", "main")
 
     def str_param(self, key: str) -> str:
         item = self._params[key]
@@ -79,7 +95,7 @@ class Payload:
 
     def __hash__(self):
         chem_hashes = [hash(item) for item in self.compounds]
-        param_hashes = [str(k) + "=" + str(v) for k, v in self.params.compounds()]
+        param_hashes = [str(k) + "=" + str(v) for k, v in self.params]
         return hash(tuple(*chem_hashes, *param_hashes))
 
     def __repr__(self):

@@ -14,7 +14,7 @@ toml = tomlkit.loads((root / "pyproject.toml").read_text(encoding="utf8"))
 
 
 def find(key: str) -> str:
-    return toml["tool"]["poetry"][key]
+    return str(toml["tool"]["poetry"][key])
 
 
 language = None
